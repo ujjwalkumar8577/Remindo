@@ -42,12 +42,14 @@ public class HomeActivity extends AppCompatActivity {
 	private ArrayList<HashMap<String, Object>> tmplistmap = new ArrayList<>();
 
 	private ListView listview1;
+	private LinearLayout linear1;
 	private LinearLayout nav_view;
 	private TextView drawer_textviewreminders;
 	private TextView drawer_textviewsettings;
 	private TextView drawer_textviewhelp;
 	private TextView drawer_textviewabout;
-	
+
+	private AlarmManager.OnAlarmListener onAlarmListener;
 	private Intent inh = new Intent();
 	private SharedPreferences sp1;
 	private Calendar cal = Calendar.getInstance();
@@ -55,8 +57,8 @@ public class HomeActivity extends AppCompatActivity {
 	private Calendar tmp = Calendar.getInstance();
 
 	@Override
-	protected void onCreate(Bundle _savedInstanceState) {
-		super.onCreate(_savedInstanceState);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 
 		toolbar = (Toolbar) findViewById(R.id._toolbar);
@@ -64,6 +66,7 @@ public class HomeActivity extends AppCompatActivity {
 		drawer = (DrawerLayout) findViewById(R.id._drawer);
 		nav_view = (LinearLayout) findViewById(R.id._nav_view);
 		listview1 = (ListView) findViewById(R.id.listview1);
+		linear1 = (LinearLayout) findViewById(R.id.linear1);
 
 		drawer_textviewreminders = (TextView) nav_view.findViewById(R.id.textviewreminders);
 		drawer_textviewsettings = (TextView) nav_view.findViewById(R.id.textviewsettings);
@@ -162,6 +165,13 @@ public class HomeActivity extends AppCompatActivity {
 			}
 		});
 
+		linear1.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				setAlarm(System.currentTimeMillis() + 30*1000L);
+			}
+		});
+
 		if (!sp1.getString("allrem", "").equals("")) {
 			tmplistmap = new Gson().fromJson(sp1.getString("allrem", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
 			loadUpcoming();
@@ -177,6 +187,16 @@ public class HomeActivity extends AppCompatActivity {
 		else {
 			super.onBackPressed();
 		}
+	}
+
+	private void setAlarm(long time) {
+		Intent intent = new Intent(this,AlarmBroadcastReceiver.class);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(),234324243, intent, 0);
+
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+
+		Toast.makeText(this, "Alarm set", Toast.LENGTH_SHORT).show();
 	}
 
 	private void showNotification(int id, String title, String text) {
