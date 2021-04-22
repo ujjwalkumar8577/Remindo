@@ -18,7 +18,7 @@ public class AddActivity extends AppCompatActivity {
 	
 	private Toolbar toolbar;
 	private HashMap<String, Object> mp = new HashMap<>();
-	private double t = 0;
+	private double i = 0;
 	private HashMap<String, Object> newmp = new HashMap<>();
 	private String stype = "";
 	private String sname = "";
@@ -168,11 +168,10 @@ public class AddActivity extends AppCompatActivity {
 						mp.put("frequency", sfrequency);
 						reminderList.add(mp);
 						sp1.edit().putString("rem", new Gson().toJson(reminderList)).commit();
-						t = 0;
-						for(int _repeat82 = 0; _repeat82 < (int)(Double.parseDouble(edittextfreq.getText().toString())); _repeat82++) {
+						for(i=0; i<Integer.parseInt(edittextfreq.getText().toString()); i++) {
 							tmp.setTimeInMillis((long)(cal.getTimeInMillis()));
 							if (srep.equals("1") || srep.equals("0")) {
-								tmp.add(Calendar.DAY_OF_MONTH, (int)(t));
+								tmp.add(Calendar.DAY_OF_MONTH, (int)(i));
 								newmp = new HashMap<>();
 								newmp.put("id", stime);
 								newmp.put("type", stype);
@@ -181,60 +180,57 @@ public class AddActivity extends AppCompatActivity {
 								newmp.put("frequency", sfrequency);
 								newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
 								allReminderList.add(newmp);
+								setAlarm(tmp.getTimeInMillis(), sname, (int)tmp.getTimeInMillis()%1001);
 							}
-							else {
-								if (srep.equals("2")) {
-									tmp.add(Calendar.DAY_OF_MONTH, (int)(7 * t));
-									newmp = new HashMap<>();
-									newmp.put("id", stime);
-									newmp.put("type", stype);
-									newmp.put("name", sname);
-									newmp.put("rep", srep);
-									newmp.put("frequency", sfrequency);
-									newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-									allReminderList.add(newmp);
-								}
-								else {
-									if (srep.equals("3")) {
-										tmp.add(Calendar.MONTH, (int)(t));
-										newmp = new HashMap<>();
-										newmp.put("id", stime);
-										newmp.put("type", stype);
-										newmp.put("name", sname);
-										newmp.put("rep", srep);
-										newmp.put("frequency", sfrequency);
-										newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-										allReminderList.add(newmp);
-									}
-									else {
-										if (srep.equals("4")) {
-											tmp.add(Calendar.MONTH, (int)(3 * t));
-											newmp = new HashMap<>();
-											newmp.put("id", stime);
-											newmp.put("type", stype);
-											newmp.put("name", sname);
-											newmp.put("rep", srep);
-											newmp.put("frequency", sfrequency);
-											newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-											allReminderList.add(newmp);
-										}
-										else {
-											if (srep.equals("5")) {
-												tmp.add(Calendar.YEAR, (int)(t));
-												newmp = new HashMap<>();
-												newmp.put("id", stime);
-												newmp.put("type", stype);
-												newmp.put("name", sname);
-												newmp.put("rep", srep);
-												newmp.put("frequency", sfrequency);
-												newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-												allReminderList.add(newmp);
-											}
-										}
-									}
-								}
+							else if (srep.equals("2")) {
+								tmp.add(Calendar.DAY_OF_MONTH, (int)(7 * i));
+								newmp = new HashMap<>();
+								newmp.put("id", stime);
+								newmp.put("type", stype);
+								newmp.put("name", sname);
+								newmp.put("rep", srep);
+								newmp.put("frequency", sfrequency);
+								newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
+								allReminderList.add(newmp);
+								setAlarm(tmp.getTimeInMillis(), sname, (int)tmp.getTimeInMillis()%1001);
 							}
-							t++;
+							else if (srep.equals("3")) {
+								tmp.add(Calendar.MONTH, (int)(i));
+								newmp = new HashMap<>();
+								newmp.put("id", stime);
+								newmp.put("type", stype);
+								newmp.put("name", sname);
+								newmp.put("rep", srep);
+								newmp.put("frequency", sfrequency);
+								newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
+								allReminderList.add(newmp);
+								setAlarm(tmp.getTimeInMillis(), sname, (int)tmp.getTimeInMillis()%1001);
+							}
+							else if (srep.equals("4")) {
+								tmp.add(Calendar.MONTH, (int)(3 * i));
+								newmp = new HashMap<>();
+								newmp.put("id", stime);
+								newmp.put("type", stype);
+								newmp.put("name", sname);
+								newmp.put("rep", srep);
+								newmp.put("frequency", sfrequency);
+								newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
+								allReminderList.add(newmp);
+								setAlarm(tmp.getTimeInMillis(), sname, (int)tmp.getTimeInMillis()%1001);
+							}
+							else if (srep.equals("5")) {
+								tmp.add(Calendar.YEAR, (int)(i));
+								newmp = new HashMap<>();
+								newmp.put("id", stime);
+								newmp.put("type", stype);
+								newmp.put("name", sname);
+								newmp.put("rep", srep);
+								newmp.put("frequency", sfrequency);
+								newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
+								allReminderList.add(newmp);
+								setAlarm(tmp.getTimeInMillis(), sname, (int)tmp.getTimeInMillis()%1001);
+							}
+							i++;
 						}
 						sp1.edit().putString("allrem", new Gson().toJson(allReminderList)).commit();
 						SketchwareUtil.showMessage(getApplicationContext(), "Reminder added");
@@ -310,6 +306,18 @@ public class AddActivity extends AppCompatActivity {
 		exit.create().show();
 	}
 
+	private void setAlarm(long time, String name, int id) {
+		Intent intent = new Intent(this,AlarmBroadcastReceiver.class);
+		intent.putExtra("name",name);
+		intent.putExtra("id", id);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(),234324243, intent, 0);
+
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+
+		Toast.makeText(this, "Alarm set", Toast.LENGTH_SHORT).show();
+	}
+
 	public static class DatePickerFragment extends androidx.appcompat.app.AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -322,7 +330,6 @@ public class AddActivity extends AppCompatActivity {
 		public void onDateSet(DatePicker view, int year, int month, int day) {
 			int mon = month +1;
 			String date = day + " / " + mon + " / " + year;
-			
 			TextView textviewdated = (TextView) getActivity().findViewById(R.id.textviewdated);
 			TextView textviewdatem = (TextView) getActivity().findViewById(R.id.textviewdatem);
 			TextView textviewdatey = (TextView) getActivity().findViewById(R.id.textviewdatey);
@@ -341,8 +348,10 @@ public class AddActivity extends AppCompatActivity {
 			return new TimePickerDialog(getActivity(), this, hour, minute, android.text.format.DateFormat.is24HourFormat(getActivity()));
 		}
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-			((TextView)getActivity().findViewById(R.id.textviewtimeh)).setText(hourOfDay+"");
-			((TextView)getActivity().findViewById(R.id.textviewtimem)).setText(minute+"");
+		 	TextView textviewTimeHr = (TextView) getActivity().findViewById(R.id.textviewtimeh);
+		 	TextView textviewTimeMin = (TextView) getActivity().findViewById(R.id.textviewtimem);
+		 	textviewTimeHr.setText(hourOfDay+"");
+		 	textviewTimeMin.setText(minute+"");
 		}
 	}
 }
