@@ -168,7 +168,7 @@ public class HomeActivity extends AppCompatActivity {
 		linear1.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				setAlarm(System.currentTimeMillis() + 30*1000L);
+				setAlarm(System.currentTimeMillis() + 30*1000L, "Test Alarm", 1);
 			}
 		});
 
@@ -189,8 +189,10 @@ public class HomeActivity extends AppCompatActivity {
 		}
 	}
 
-	private void setAlarm(long time) {
+	private void setAlarm(long time, String name, int id) {
 		Intent intent = new Intent(this,AlarmBroadcastReceiver.class);
+		intent.putExtra("name",name);
+		intent.putExtra("id", id);
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(),234324243, intent, 0);
 
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
