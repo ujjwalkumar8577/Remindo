@@ -16,16 +16,16 @@ public class SettingsActivity extends AppCompatActivity {
 		setContentView(R.layout.settings);
 
 		toolbar = (Toolbar) findViewById(R.id._toolbar);
+
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
+
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _v) {
 				onBackPressed();
 			}
 		});
-
-		setTitle("Settings");
 	}
 }

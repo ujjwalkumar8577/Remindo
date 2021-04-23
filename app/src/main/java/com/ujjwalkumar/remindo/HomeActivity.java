@@ -4,14 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import android.app.*;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.*;
 import android.view.*;
 import android.widget.*;
@@ -79,14 +76,17 @@ public class HomeActivity extends AppCompatActivity {
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
-		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(HomeActivity.this, drawer, toolbar, R.string.app_name, R.string.app_name);
+		final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(HomeActivity.this, drawer, toolbar, R.string.app_name, R.string.app_name);
 		drawer.addDrawerListener(toggle);
 		toggle.syncState();
 
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _v) {
-				onBackPressed();
+				if(drawer.isDrawerOpen(GravityCompat.START))
+					onBackPressed();
+				else
+					drawer.openDrawer(GravityCompat.START);
 			}
 		});
 
@@ -165,13 +165,6 @@ public class HomeActivity extends AppCompatActivity {
 			}
 		});
 
-		linear1.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				setAlarm(System.currentTimeMillis() + 30*1000L, "Test Alarm", 1);
-			}
-		});
-
 		if (!sp1.getString("allrem", "").equals("")) {
 			tmplistmap = new Gson().fromJson(sp1.getString("allrem", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
 			loadUpcoming();
@@ -180,40 +173,12 @@ public class HomeActivity extends AppCompatActivity {
 	
 	@Override
 	public void onBackPressed() {
-		showNotification(0,"Title","My first notification");
 		if (drawer.isDrawerOpen(GravityCompat.START)) {
 			drawer.closeDrawer(GravityCompat.START);
 		}
 		else {
 			super.onBackPressed();
 		}
-	}
-
-	private void setAlarm(long time, String name, int id) {
-		Intent intent = new Intent(this,AlarmBroadcastReceiver.class);
-		intent.putExtra("name",name);
-		intent.putExtra("id", id);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(),234324243, intent, 0);
-
-		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
-
-		Toast.makeText(this, "Alarm set", Toast.LENGTH_SHORT).show();
-	}
-
-	private void showNotification(int id, String title, String text) {
-		Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID);
-		builder.setContentTitle(title);
-		builder.setContentText(text);
-		builder.setSmallIcon(R.drawable.app_icon);
-		builder.setOngoing(true);
-		builder.setAutoCancel(false);
-		builder.setSound(alarmSound);
-
-		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		manager.notify(id, builder.build());
 	}
 
 	private void loadUpcoming () {

@@ -15,22 +15,21 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class AddActivity extends AppCompatActivity {
-	
-	private Toolbar toolbar;
-	private HashMap<String, Object> mp = new HashMap<>();
-	private double i = 0;
-	private HashMap<String, Object> newmp = new HashMap<>();
-	private String stype = "";
-	private String sname = "";
-	private String stime = "";
-	private String srep = "";
-	private String sfrequency = "";
-	
+
 	private ArrayList<String> types = new ArrayList<>();
 	private ArrayList<String> repeats = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> reminderList = new ArrayList<>();
 	private ArrayList<HashMap<String, Object>> allReminderList = new ArrayList<>();
+	private HashMap<String, Object> mp = new HashMap<>();
+	private HashMap<String, Object> newmp = new HashMap<>();
+	private int i = 0;
+	private String remType = "";
+	private String remName = "";
+	private String remTime = "";
+	private String remRepeat = "";
+	private String remFrequency = "";
 
+	private Toolbar toolbar;
 	private LinearLayout linear4;
 	private LinearLayout linear5;
 	private Spinner spinnertype;
@@ -99,154 +98,52 @@ public class AddActivity extends AppCompatActivity {
 
 		spinnertype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> _param1, View _param2, int _param3, long _param4) {
-				final int _position = _param3;
-				if (_position == 0) {
+			public void onItemSelected(AdapterView<?> param1, View param2, int param3, long param4) {
+				final int position = param3;
+				if (position == 0) {
 					spinnerrepeat.setSelection((int)(0));
 					edittextfreq.setText("1");
 				}
-				if (_position == 3) {
+				if (position == 3) {
 					spinnerrepeat.setSelection((int)(1));
 					edittextfreq.setText("365");
 				}
-				if (_position == 8) {
+				if (position == 8) {
 					spinnerrepeat.setSelection((int)(3));
 					edittextfreq.setText("12");
 				}
-				if (_position == 6) {
+				if (position == 6) {
 					spinnerrepeat.setSelection((int)(4));
 					edittextfreq.setText("12");
 				}
-				if ((_position == 1) || ((_position == 2) || ((_position == 4) || ((_position == 5) || (_position == 7))))) {
+				if ((position == 1) || ((position == 2) || ((position == 4) || ((position == 5) || (position == 7))))) {
 					spinnerrepeat.setSelection((int)(5));
 					edittextfreq.setText("5");
 				}
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> _param1) {
+			public void onNothingSelected(AdapterView<?> param1) {
 
 			}
 		});
 
 		spinnerrepeat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> _param1, View _param2, int _param3, long _param4) {
-				final int _position = _param3;
-
+			public void onItemSelected(AdapterView<?> param1, View param2, int param3, long param4) {
+				final int position = param3;
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> _param1) {
+			public void onNothingSelected(AdapterView<?> param1) {
 
 			}
 		});
 
 		buttonsave.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
-				cal.set(Calendar.DAY_OF_MONTH, (int)(Double.parseDouble(textviewdated.getText().toString())));
-				cal.set(Calendar.MONTH, (int)(Double.parseDouble(textviewdatem.getText().toString()) - 1));
-				cal.set(Calendar.YEAR, (int)(Double.parseDouble(textviewdatey.getText().toString())));
-				cal.set(Calendar.HOUR, (int)(Double.parseDouble(textviewtimeh.getText().toString())));
-				cal.set(Calendar.MINUTE, (int)(Double.parseDouble(textviewtimem.getText().toString())));
-				cal.add(Calendar.HOUR, (int)(-12));
-				SketchwareUtil.showMessage(getApplicationContext(), new SimpleDateFormat("d/MM/yyyy    hh:mm").format(cal.getTime()));
-				if (!edittextname.getText().toString().equals("")) {
-					if (!edittextfreq.getText().toString().equals("")) {
-						stype = String.valueOf((long)(spinnertype.getSelectedItemPosition()));
-						sname = edittextname.getText().toString();
-						stime = String.valueOf((long)(cal.getTimeInMillis()));
-						srep = String.valueOf((long)(spinnerrepeat.getSelectedItemPosition()));
-						sfrequency = edittextfreq.getText().toString();
-						mp = new HashMap<>();
-						mp.put("id", stime);
-						mp.put("type", stype);
-						mp.put("name", sname);
-						mp.put("time", stime);
-						mp.put("rep", srep);
-						mp.put("frequency", sfrequency);
-						reminderList.add(mp);
-						sp1.edit().putString("rem", new Gson().toJson(reminderList)).commit();
-						for(i=0; i<Integer.parseInt(edittextfreq.getText().toString()); i++) {
-							tmp.setTimeInMillis((long)(cal.getTimeInMillis()));
-							if (srep.equals("1") || srep.equals("0")) {
-								tmp.add(Calendar.DAY_OF_MONTH, (int)(i));
-								newmp = new HashMap<>();
-								newmp.put("id", stime);
-								newmp.put("type", stype);
-								newmp.put("name", sname);
-								newmp.put("rep", srep);
-								newmp.put("frequency", sfrequency);
-								newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-								allReminderList.add(newmp);
-								setAlarm(tmp.getTimeInMillis(), sname, (int)tmp.getTimeInMillis()%1001);
-							}
-							else if (srep.equals("2")) {
-								tmp.add(Calendar.DAY_OF_MONTH, (int)(7 * i));
-								newmp = new HashMap<>();
-								newmp.put("id", stime);
-								newmp.put("type", stype);
-								newmp.put("name", sname);
-								newmp.put("rep", srep);
-								newmp.put("frequency", sfrequency);
-								newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-								allReminderList.add(newmp);
-								setAlarm(tmp.getTimeInMillis(), sname, (int)tmp.getTimeInMillis()%1001);
-							}
-							else if (srep.equals("3")) {
-								tmp.add(Calendar.MONTH, (int)(i));
-								newmp = new HashMap<>();
-								newmp.put("id", stime);
-								newmp.put("type", stype);
-								newmp.put("name", sname);
-								newmp.put("rep", srep);
-								newmp.put("frequency", sfrequency);
-								newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-								allReminderList.add(newmp);
-								setAlarm(tmp.getTimeInMillis(), sname, (int)tmp.getTimeInMillis()%1001);
-							}
-							else if (srep.equals("4")) {
-								tmp.add(Calendar.MONTH, (int)(3 * i));
-								newmp = new HashMap<>();
-								newmp.put("id", stime);
-								newmp.put("type", stype);
-								newmp.put("name", sname);
-								newmp.put("rep", srep);
-								newmp.put("frequency", sfrequency);
-								newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-								allReminderList.add(newmp);
-								setAlarm(tmp.getTimeInMillis(), sname, (int)tmp.getTimeInMillis()%1001);
-							}
-							else if (srep.equals("5")) {
-								tmp.add(Calendar.YEAR, (int)(i));
-								newmp = new HashMap<>();
-								newmp.put("id", stime);
-								newmp.put("type", stype);
-								newmp.put("name", sname);
-								newmp.put("rep", srep);
-								newmp.put("frequency", sfrequency);
-								newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-								allReminderList.add(newmp);
-								setAlarm(tmp.getTimeInMillis(), sname, (int)tmp.getTimeInMillis()%1001);
-							}
-							i++;
-						}
-						sp1.edit().putString("allrem", new Gson().toJson(allReminderList)).commit();
-						SketchwareUtil.showMessage(getApplicationContext(), "Reminder added");
-						ina.setAction(Intent.ACTION_VIEW);
-						ina.setClass(getApplicationContext(), HomeActivity.class);
-						ina.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-						startActivity(ina);
-						finish();
-					}
-					else {
-						SketchwareUtil.showMessage(getApplicationContext(), "Frequency required");
-					}
-				}
-				else {
-					SketchwareUtil.showMessage(getApplicationContext(), "Name required");
-				}
+			public void onClick(View view) {
+				saveReminder();
 			}
 		});
 
@@ -280,7 +177,6 @@ public class AddActivity extends AppCompatActivity {
 		if (!sp1.getString("allrem", "").equals("")) {
 			allReminderList = new Gson().fromJson(sp1.getString("allrem", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
 		}
-
 	}
 
 	@Override
@@ -306,16 +202,122 @@ public class AddActivity extends AppCompatActivity {
 		exit.create().show();
 	}
 
+	private void saveReminder() {
+		cal.set(Calendar.DAY_OF_MONTH, (Integer.parseInt(textviewdated.getText().toString())));
+		cal.set(Calendar.MONTH, (Integer.parseInt(textviewdatem.getText().toString()) - 1));
+		cal.set(Calendar.YEAR, (Integer.parseInt(textviewdatey.getText().toString())));
+		cal.set(Calendar.HOUR_OF_DAY, (Integer.parseInt(textviewtimeh.getText().toString())));
+		cal.set(Calendar.MINUTE, (Integer.parseInt(textviewtimem.getText().toString())));
+
+		if (!edittextname.getText().toString().equals("")) {
+			if (!edittextfreq.getText().toString().equals("")) {
+				remType = String.valueOf((long)(spinnertype.getSelectedItemPosition()));
+				remName = edittextname.getText().toString();
+				remTime = String.valueOf((long)(cal.getTimeInMillis()));
+				remRepeat = String.valueOf((long)(spinnerrepeat.getSelectedItemPosition()));
+				remFrequency = edittextfreq.getText().toString();
+				mp = new HashMap<>();
+				mp.put("id", remTime);
+				mp.put("type", remType);
+				mp.put("name", remName);
+				mp.put("time", remTime);
+				mp.put("rep", remRepeat);
+				mp.put("frequency", remFrequency);
+				reminderList.add(mp);
+				sp1.edit().putString("rem", new Gson().toJson(reminderList)).commit();
+				for(i=0; i<Integer.parseInt(edittextfreq.getText().toString()); i++) {
+					tmp.setTimeInMillis((long)(cal.getTimeInMillis()));
+					if (remRepeat.equals("1") || remRepeat.equals("0")) {
+						tmp.add(Calendar.DAY_OF_MONTH, (int)(i));
+						newmp = new HashMap<>();
+						newmp.put("id", remTime);
+						newmp.put("type", remType);
+						newmp.put("name", remName);
+						newmp.put("rep", remRepeat);
+						newmp.put("frequency", remFrequency);
+						newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
+						allReminderList.add(newmp);
+						setAlarm(tmp.getTimeInMillis(), remName, (int)tmp.getTimeInMillis()%1000000007);
+					}
+					else if (remRepeat.equals("2")) {
+						tmp.add(Calendar.DAY_OF_MONTH, (int)(7 * i));
+						newmp = new HashMap<>();
+						newmp.put("id", remTime);
+						newmp.put("type", remType);
+						newmp.put("name", remName);
+						newmp.put("rep", remRepeat);
+						newmp.put("frequency", remFrequency);
+						newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
+						allReminderList.add(newmp);
+						setAlarm(tmp.getTimeInMillis(), remName, (int)tmp.getTimeInMillis()%1000000007);
+					}
+					else if (remRepeat.equals("3")) {
+						tmp.add(Calendar.MONTH, (int)(i));
+						newmp = new HashMap<>();
+						newmp.put("id", remTime);
+						newmp.put("type", remType);
+						newmp.put("name", remName);
+						newmp.put("rep", remRepeat);
+						newmp.put("frequency", remFrequency);
+						newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
+						allReminderList.add(newmp);
+						setAlarm(tmp.getTimeInMillis(), remName, (int)tmp.getTimeInMillis()%1000000007);
+					}
+					else if (remRepeat.equals("4")) {
+						tmp.add(Calendar.MONTH, (int)(3 * i));
+						newmp = new HashMap<>();
+						newmp.put("id", remTime);
+						newmp.put("type", remType);
+						newmp.put("name", remName);
+						newmp.put("rep", remRepeat);
+						newmp.put("frequency", remFrequency);
+						newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
+						allReminderList.add(newmp);
+						setAlarm(tmp.getTimeInMillis(), remName, (int)tmp.getTimeInMillis()%1000000007);
+					}
+					else if (remRepeat.equals("5")) {
+						tmp.add(Calendar.YEAR, (int)(i));
+						newmp = new HashMap<>();
+						newmp.put("id", remTime);
+						newmp.put("type", remType);
+						newmp.put("name", remName);
+						newmp.put("rep", remRepeat);
+						newmp.put("frequency", remFrequency);
+						newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
+						allReminderList.add(newmp);
+						setAlarm(tmp.getTimeInMillis(), remName, (int)tmp.getTimeInMillis()%1000000007);
+					}
+					i++;
+				}
+				sp1.edit().putString("allrem", new Gson().toJson(allReminderList)).commit();
+				ina.setAction(Intent.ACTION_VIEW);
+				ina.setClass(getApplicationContext(), HomeActivity.class);
+				ina.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				startActivity(ina);
+				finish();
+			}
+			else {
+				SketchwareUtil.showMessage(getApplicationContext(), "Frequency required");
+			}
+		}
+		else {
+			SketchwareUtil.showMessage(getApplicationContext(), "Name required");
+		}
+	}
+
 	private void setAlarm(long time, String name, int id) {
 		Intent intent = new Intent(this,AlarmBroadcastReceiver.class);
 		intent.putExtra("name",name);
 		intent.putExtra("id", id);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(),234324243, intent, 0);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), id, intent, 0);
 
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
-
-		Toast.makeText(this, "Alarm set", Toast.LENGTH_SHORT).show();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+		}
+		else {
+			alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+		}
 	}
 
 	public static class DatePickerFragment extends androidx.appcompat.app.AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -327,9 +329,10 @@ public class AddActivity extends AppCompatActivity {
 			int day = c.get(Calendar.DAY_OF_MONTH);
 			return new DatePickerDialog(getActivity(), this, year, month, day);
 		}
+
+		@Override
 		public void onDateSet(DatePicker view, int year, int month, int day) {
 			int mon = month +1;
-			String date = day + " / " + mon + " / " + year;
 			TextView textviewdated = (TextView) getActivity().findViewById(R.id.textviewdated);
 			TextView textviewdatem = (TextView) getActivity().findViewById(R.id.textviewdatem);
 			TextView textviewdatey = (TextView) getActivity().findViewById(R.id.textviewdatey);
@@ -347,6 +350,8 @@ public class AddActivity extends AppCompatActivity {
 			int minute = c.get(Calendar.MINUTE);
 			return new TimePickerDialog(getActivity(), this, hour, minute, android.text.format.DateFormat.is24HourFormat(getActivity()));
 		}
+
+		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 		 	TextView textviewTimeHr = (TextView) getActivity().findViewById(R.id.textviewtimeh);
 		 	TextView textviewTimeMin = (TextView) getActivity().findViewById(R.id.textviewtimem);

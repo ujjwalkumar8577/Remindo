@@ -12,18 +12,20 @@ import android.net.*;
 public class HelpActivity extends AppCompatActivity {
 
 	private Toolbar toolbar;
-	private LinearLayout layout;
 	private Button send;
 	private EditText name;
 	private EditText feed;
-	
-	private Intent inf = new Intent();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.help);
 
 		toolbar = (Toolbar) findViewById(R.id._toolbar);
+		send = (Button) findViewById(R.id.send);
+		name = (EditText) findViewById(R.id.name);
+		feed = (EditText) findViewById(R.id.feed);
+
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
@@ -34,19 +36,18 @@ public class HelpActivity extends AppCompatActivity {
 			}
 		});
 
-		layout = (LinearLayout) findViewById(R.id.layout);
-		send = (Button) findViewById(R.id.send);
-		name = (EditText) findViewById(R.id.name);
-		feed = (EditText) findViewById(R.id.feed);
-
 		send.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
 				if (!name.getText().toString().equals("")) {
 					if (!feed.getText().toString().equals("")) {
+						String emailAddress = "na@gmail.com";
+						String body = "Name:" + name.getText().toString() + "\n" + "Feedback:\n" + feed.getText().toString();
+
+						Intent inf = new Intent();
 						inf.setAction(Intent.ACTION_VIEW);
-						inf.setData(Uri.parse("mailto:".concat("na@gmail.com")));
-						inf.putExtra("body", "Name:".concat(name.getText().toString().concat("\n".concat("Feedback:\n".concat(feed.getText().toString())))));
+						inf.setData(Uri.parse("mailto:"+emailAddress));
+						inf.putExtra("body", body);
 						startActivity(inf);
 						SketchwareUtil.showMessage(getApplicationContext(), "Press send button.");
 						finish();
