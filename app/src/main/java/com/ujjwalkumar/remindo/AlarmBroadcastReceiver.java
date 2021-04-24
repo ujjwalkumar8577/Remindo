@@ -35,7 +35,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             notificationManager.createNotificationChannel(channel);
         }
 
-        showNotification(context, intent.getIntExtra("id",0), intent.getStringExtra("name"), intent.getStringExtra("name"));
+        showNotification(context, intent.getIntExtra("id",0), intent.getStringExtra("name"), intent.getStringExtra("time"));
     }
 
     private void showNotification(Context context,int id, String title, String text) {
@@ -45,7 +45,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         builder.setContentTitle(title);
         builder.setContentText(text);
         builder.setSmallIcon(R.drawable.app_icon);
-        builder.setOngoing(true);
+        // builder.setOngoing(true);
         builder.setAutoCancel(false);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {

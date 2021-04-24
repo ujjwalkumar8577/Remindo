@@ -307,9 +307,13 @@ public class AddActivity extends AppCompatActivity {
 	}
 
 	private void setAlarm(long time, String name, int id) {
-		Intent intent = new Intent(this,AlarmBroadcastReceiver.class);
-		intent.putExtra("name",name);
+		Calendar ctmp = Calendar.getInstance();
+		ctmp.setTimeInMillis(time);
+
+		Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
+		intent.putExtra("name", name);
 		intent.putExtra("id", id);
+		intent.putExtra("time", new SimpleDateFormat("h:mm a").format(ctmp.getTime()));
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), id, intent, 0);
 
 		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
