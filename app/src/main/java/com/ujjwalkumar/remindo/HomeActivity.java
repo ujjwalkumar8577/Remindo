@@ -39,14 +39,12 @@ public class HomeActivity extends AppCompatActivity {
 	private ArrayList<HashMap<String, Object>> tmplistmap = new ArrayList<>();
 
 	private ListView listview1;
-	private LinearLayout linear1;
 	private LinearLayout nav_view;
 	private TextView drawer_textviewreminders;
 	private TextView drawer_textviewsettings;
 	private TextView drawer_textviewhelp;
 	private TextView drawer_textviewabout;
 
-	private AlarmManager.OnAlarmListener onAlarmListener;
 	private Intent inh = new Intent();
 	private SharedPreferences sp1;
 	private Calendar cal = Calendar.getInstance();
@@ -58,12 +56,11 @@ public class HomeActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 
-		toolbar = (Toolbar) findViewById(R.id._toolbar);
-		fab = (FloatingActionButton) findViewById(R.id._fab);
-		drawer = (DrawerLayout) findViewById(R.id._drawer);
-		nav_view = (LinearLayout) findViewById(R.id._nav_view);
-		listview1 = (ListView) findViewById(R.id.listview1);
-		linear1 = (LinearLayout) findViewById(R.id.linear1);
+		toolbar = findViewById(R.id.toolbar);
+		fab = findViewById(R.id.fab);
+		drawer = findViewById(R.id.drawer);
+		nav_view = findViewById(R.id.nav_view);
+		listview1 = findViewById(R.id.listview1);
 
 		drawer_textviewreminders = (TextView) nav_view.findViewById(R.id.textviewreminders);
 		drawer_textviewsettings = (TextView) nav_view.findViewById(R.id.textviewsettings);
@@ -82,7 +79,7 @@ public class HomeActivity extends AppCompatActivity {
 
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _v) {
+			public void onClick(View v) {
 				if(drawer.isDrawerOpen(GravityCompat.START))
 					onBackPressed();
 				else
@@ -192,141 +189,128 @@ public class HomeActivity extends AppCompatActivity {
 			t++;
 		}
 		Collections.sort(allReminderList, new Comparator<Map<String, Object>>() {
-			         public int compare(final Map<String, Object> o1, final Map<String, Object> o2) {
-				             return ((String) o1.get("time")).compareTo((String) o2.get("time"));
-				         }
-			     });
+			 public int compare(final Map<String, Object> o1, final Map<String, Object> o2) {
+					 return ((String) o1.get("time")).compareTo((String) o2.get("time"));
+				 }
+		 });
+
 		listview1.setAdapter(new Listview1Adapter(allReminderList));
 		((BaseAdapter)listview1.getAdapter()).notifyDataSetChanged();
 	}
 
 	public class Listview1Adapter extends BaseAdapter {
-		ArrayList<HashMap<String, Object>> _data;
-		public Listview1Adapter(ArrayList<HashMap<String, Object>> _arr) {
-			_data = _arr;
+		ArrayList<HashMap<String, Object>> data;
+		public Listview1Adapter(ArrayList<HashMap<String, Object>> arr) {
+			data = arr;
 		}
 		
 		@Override
 		public int getCount() {
-			return _data.size();
+			return data.size();
 		}
 		
 		@Override
-		public HashMap<String, Object> getItem(int _index) {
-			return _data.get(_index);
+		public HashMap<String, Object> getItem(int index) {
+			return data.get(index);
 		}
 		
 		@Override
-		public long getItemId(int _index) {
-			return _index;
+		public long getItemId(int index) {
+			return index;
 		}
+
 		@Override
-		public View getView(final int _position, View _view, ViewGroup _viewGroup) {
-			LayoutInflater _inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View _v = _view;
-			if (_v == null) {
-				_v = _inflater.inflate(R.layout.reminderview, null);
+		public View getView(final int position, View view, ViewGroup _viewGroup) {
+			LayoutInflater inflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View v = view;
+			if (v == null) {
+				v = inflater.inflate(R.layout.reminderview, null);
 			}
 			
-			final LinearLayout layout = (LinearLayout) _v.findViewById(R.id.layout);
-			final ImageView imageviewtype = (ImageView) _v.findViewById(R.id.imageviewtype);
-			final LinearLayout linear2 = (LinearLayout) _v.findViewById(R.id.linear2);
-			final TextView textviewtype = (TextView) _v.findViewById(R.id.textviewtype);
-			final TextView textviewname = (TextView) _v.findViewById(R.id.textviewname);
-			final LinearLayout linear3 = (LinearLayout) _v.findViewById(R.id.linear3);
-			final TextView textviewdate = (TextView) _v.findViewById(R.id.textviewdate);
-			final TextView textviewtime = (TextView) _v.findViewById(R.id.textviewtime);
+			final LinearLayout layout = (LinearLayout) v.findViewById(R.id.layout);
+			final ImageView imageviewtype = (ImageView) v.findViewById(R.id.imageviewtype);
+			final TextView textviewtype = (TextView) v.findViewById(R.id.textviewtype);
+			final TextView textviewname = (TextView) v.findViewById(R.id.textviewname);
+			final TextView textviewdate = (TextView) v.findViewById(R.id.textviewdate);
+			final TextView textviewtime = (TextView) v.findViewById(R.id.textviewtime);
 			
 			android.graphics.drawable.GradientDrawable gd1 = new android.graphics.drawable.GradientDrawable(); gd1.setColor(Color.parseColor("#4DD0E1")); gd1.setCornerRadius(50); layout.setBackground(gd1);
 			android.graphics.drawable.GradientDrawable gd2 = new android.graphics.drawable.GradientDrawable(); gd2.setCornerRadius(30); imageviewtype.setBackground(gd2);
-			if (allReminderList.get((int)_position).containsKey("type")) {
-				stype = allReminderList.get((int)_position).get("type").toString();
+
+			if (allReminderList.get(position).containsKey("type")) {
+				stype = allReminderList.get(position).get("type").toString();
 			}
 			else {
 				stype = "0";
 			}
-			if (allReminderList.get((int)_position).containsKey("name")) {
-				sname = allReminderList.get((int)_position).get("name").toString();
+			if (allReminderList.get(position).containsKey("name")) {
+				sname = allReminderList.get(position).get("name").toString();
 			}
 			else {
 				sname = "NA";
 			}
-			if (allReminderList.get((int)_position).containsKey("time")) {
-				stime = allReminderList.get((int)_position).get("time").toString();
+			if (allReminderList.get(position).containsKey("time")) {
+				stime = allReminderList.get(position).get("time").toString();
 			}
 			else {
 				stime = String.valueOf((long)(cal.getTimeInMillis()));
 			}
-			if (allReminderList.get((int)_position).containsKey("rep")) {
-				srep = allReminderList.get((int)_position).get("rep").toString();
+			if (allReminderList.get(position).containsKey("rep")) {
+				srep = allReminderList.get(position).get("rep").toString();
 			}
 			else {
 				srep = "0";
 			}
-			if (allReminderList.get((int)_position).containsKey("frequency")) {
-				sfrequency = allReminderList.get((int)_position).get("frequency").toString();
+			if (allReminderList.get(position).containsKey("frequency")) {
+				sfrequency = allReminderList.get(position).get("frequency").toString();
 			}
 			else {
 				sfrequency = "1";
 			}
+
 			cal.setTimeInMillis((long)(Double.parseDouble(stime)));
 			textviewname.setText(sname);
 			textviewdate.setText(new SimpleDateFormat("d MMM yyyy").format(cal.getTime()));
 			textviewtime.setText(new SimpleDateFormat("h:mm a").format(cal.getTime()));
+
 			if (stype.equals("0")) {
 				imageviewtype.setImageResource(R.drawable.remind);
 				textviewtype.setText("To do");
 			}
-			else {
-				if (stype.equals("1")) {
-					imageviewtype.setImageResource(R.drawable.birthday);
-					textviewtype.setText("Happy Birthday");
-				}
-				else {
-					if (stype.equals("2")) {
-						imageviewtype.setImageResource(R.drawable.anniversary);
-						textviewtype.setText("Happy Anniversary");
-					}
-					else {
-						if (stype.equals("3")) {
-							imageviewtype.setImageResource(R.drawable.dailytask);
-							textviewtype.setText("Daily Task");
-						}
-						else {
-							if (stype.equals("4")) {
-								imageviewtype.setImageResource(R.drawable.vehicleinsurance);
-								textviewtype.setText("Vehicle Insurance");
-							}
-							else {
-								if (stype.equals("5")) {
-									imageviewtype.setImageResource(R.drawable.vehiclefitness);
-									textviewtype.setText("Vehicle Fitness");
-								}
-								else {
-									if (stype.equals("6")) {
-										imageviewtype.setImageResource(R.drawable.vehicleservice);
-										textviewtype.setText("Vehicle Service");
-									}
-									else {
-										if (stype.equals("7")) {
-											imageviewtype.setImageResource(R.drawable.insurancepremium);
-											textviewtype.setText("Insurance Premium");
-										}
-										else {
-											if (stype.equals("8")) {
-												imageviewtype.setImageResource(R.drawable.emi);
-												textviewtype.setText("EMI");
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
+			else if (stype.equals("1")) {
+				imageviewtype.setImageResource(R.drawable.birthday);
+				textviewtype.setText("Happy Birthday");
+			}
+			else if (stype.equals("2")) {
+				imageviewtype.setImageResource(R.drawable.anniversary);
+				textviewtype.setText("Happy Anniversary");
+			}
+			else if (stype.equals("3")) {
+				imageviewtype.setImageResource(R.drawable.dailytask);
+				textviewtype.setText("Daily Task");
+			}
+			else if (stype.equals("4")) {
+				imageviewtype.setImageResource(R.drawable.vehicleinsurance);
+				textviewtype.setText("Vehicle Insurance");
+			}
+			else if (stype.equals("5")) {
+				imageviewtype.setImageResource(R.drawable.vehiclefitness);
+				textviewtype.setText("Vehicle Fitness");
+			}
+			else if (stype.equals("6")) {
+				imageviewtype.setImageResource(R.drawable.vehicleservice);
+				textviewtype.setText("Vehicle Service");
+			}
+			else if (stype.equals("7")) {
+				imageviewtype.setImageResource(R.drawable.insurancepremium);
+				textviewtype.setText("Insurance Premium");
+			}
+			else if (stype.equals("8")) {
+				imageviewtype.setImageResource(R.drawable.emi);
+				textviewtype.setText("EMI");
 			}
 			
-			return _v;
+			return v;
 		}
 	}
 

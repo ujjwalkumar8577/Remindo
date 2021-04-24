@@ -47,9 +47,12 @@
 			android:name=".AboutActivity"
 			android:configChanges="orientation|screenSize"
 			android:screenOrientation="portrait"/>
+
 		<receiver android:name=".AlarmBroadcastReceiver"/>
+
 		<uses-library
 			android:name="org.apache.http.legacy"
 			android:required="false"/>
-	</application>
+
+    </application>
 </manifest>

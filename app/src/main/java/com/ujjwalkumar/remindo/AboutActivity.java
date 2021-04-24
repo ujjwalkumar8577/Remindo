@@ -12,15 +12,15 @@ public class AboutActivity extends AppCompatActivity {
 	
 	private Toolbar toolbar;
 	private TextView textview1;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.about);
 
-		toolbar = (Toolbar) findViewById(R.id._toolbar);
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		textview1 = (TextView) findViewById(R.id.textview1);
 
-		setTitle("About the App");
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);

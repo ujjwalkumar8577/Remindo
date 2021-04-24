@@ -27,7 +27,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             channel.setLockscreenVisibility(View.VISIBLE);
             channel.setSound(alarmSound, new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                     .build());
             channel.enableVibration(true);
             channel.setVibrationPattern(new long[]{0, 1000, 500, 1000});

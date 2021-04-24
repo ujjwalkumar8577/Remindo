@@ -15,7 +15,7 @@ public class SettingsActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings);
 
-		toolbar = (Toolbar) findViewById(R.id._toolbar);
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
 
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -23,7 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _v) {
+			public void onClick(View v) {
 				onBackPressed();
 			}
 		});

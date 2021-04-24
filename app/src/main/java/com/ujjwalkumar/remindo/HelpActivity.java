@@ -21,7 +21,7 @@ public class HelpActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.help);
 
-		toolbar = (Toolbar) findViewById(R.id._toolbar);
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		send = (Button) findViewById(R.id.send);
 		name = (EditText) findViewById(R.id.name);
 		feed = (EditText) findViewById(R.id.feed);
@@ -31,14 +31,14 @@ public class HelpActivity extends AppCompatActivity {
 		getSupportActionBar().setHomeButtonEnabled(true);
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _v) {
+			public void onClick(View v) {
 				onBackPressed();
 			}
 		});
 
 		send.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				if (!name.getText().toString().equals("")) {
 					if (!feed.getText().toString().equals("")) {
 						String emailAddress = "na@gmail.com";
@@ -49,19 +49,17 @@ public class HelpActivity extends AppCompatActivity {
 						inf.setData(Uri.parse("mailto:"+emailAddress));
 						inf.putExtra("body", body);
 						startActivity(inf);
-						SketchwareUtil.showMessage(getApplicationContext(), "Press send button.");
+						Toast.makeText(HelpActivity.this, "Press send button", Toast.LENGTH_SHORT).show();
 						finish();
 					}
 					else {
-						SketchwareUtil.showMessage(getApplicationContext(), "Please enter the message");
+						Toast.makeText(HelpActivity.this, "Please enter the message", Toast.LENGTH_SHORT).show();
 					}
 				}
 				else {
-					SketchwareUtil.showMessage(getApplicationContext(), "Please enter your name");
+					Toast.makeText(HelpActivity.this, "Please enter your name", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
-
-		setTitle("Help & Feedback");
 	}
 }

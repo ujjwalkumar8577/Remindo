@@ -54,17 +54,7 @@ public class AddActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add);
 
-		toolbar = (Toolbar) findViewById(R.id._toolbar);
-		setSupportActionBar(toolbar);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setHomeButtonEnabled(true);
-		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View _v) {
-				onBackPressed();
-			}
-		});
-
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		linear4 = (LinearLayout) findViewById(R.id.linear4);
 		linear5 = (LinearLayout) findViewById(R.id.linear5);
 		spinnertype = (Spinner) findViewById(R.id.spinnertype);
@@ -77,8 +67,19 @@ public class AddActivity extends AppCompatActivity {
 		spinnerrepeat = (Spinner) findViewById(R.id.spinnerrepeat);
 		edittextfreq = (EditText) findViewById(R.id.edittextfreq);
 		buttonsave = (Button) findViewById(R.id.buttonsave);
+
 		sp1 = getSharedPreferences("reminders", Activity.MODE_PRIVATE);
 		exit = new AlertDialog.Builder(this);
+
+		setSupportActionBar(toolbar);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View _v) {
+				onBackPressed();
+			}
+		});
 
 		linear4.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -147,7 +148,6 @@ public class AddActivity extends AppCompatActivity {
 			}
 		});
 
-		setTitle("Add");
 		types.add("Remind");
 		types.add("Birthday");
 		types.add("Anniversary");
@@ -171,6 +171,7 @@ public class AddActivity extends AppCompatActivity {
 		textviewdated.setText(new SimpleDateFormat("d").format(cal.getTime()));
 		textviewdatem.setText(new SimpleDateFormat("MM").format(cal.getTime()));
 		textviewdatey.setText(new SimpleDateFormat("yyyy").format(cal.getTime()));
+
 		if (!sp1.getString("rem", "").equals("")) {
 			reminderList = new Gson().fromJson(sp1.getString("rem", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
 		}
@@ -297,11 +298,11 @@ public class AddActivity extends AppCompatActivity {
 				finish();
 			}
 			else {
-				SketchwareUtil.showMessage(getApplicationContext(), "Frequency required");
+				Toast.makeText(this, "Frequency required", Toast.LENGTH_SHORT).show();
 			}
 		}
 		else {
-			SketchwareUtil.showMessage(getApplicationContext(), "Name required");
+			Toast.makeText(this, "Name required", Toast.LENGTH_SHORT).show();
 		}
 	}
 

@@ -6,36 +6,23 @@ import android.os.*;
 import android.widget.*;
 import android.content.*;
 import android.graphics.*;
-import android.animation.*;
-import android.view.animation.*;
 import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
 
-	private LinearLayout layout;
-	private TextView textview1;
+	private TextView textviewTitle;
 
 	private Timer timer = new Timer();
 	private TimerTask splash;
-	private ObjectAnimator ani = new ObjectAnimator();
 	private Intent in = new Intent();
 
 	@Override
-	protected void onCreate(Bundle _savedInstanceState) {
-		super.onCreate(_savedInstanceState);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		layout = (LinearLayout) findViewById(R.id.layout);
-		textview1 = (TextView) findViewById(R.id.textview1);
-
-		textview1.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/logofont.ttf"), Typeface.NORMAL);
-
-		ani.setTarget(layout);
-		ani.setPropertyName("alpha");
-		ani.setFloatValues((float)(0.2d), (float)(1.0d));
-		ani.setInterpolator(new DecelerateInterpolator());
-		ani.setDuration((int)(500));
-		ani.start();
+		textviewTitle = findViewById(R.id.textviewTitle);
+		textviewTitle.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/logofont.ttf"), Typeface.NORMAL);
 
 		splash = new TimerTask() {
 			@Override
@@ -52,6 +39,6 @@ public class MainActivity extends AppCompatActivity {
 				});
 			}
 		};
-		timer.schedule(splash, (int)(1000));
+		timer.schedule(splash, 1000);
 	}
 }
