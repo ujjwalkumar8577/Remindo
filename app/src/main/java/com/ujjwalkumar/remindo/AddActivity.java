@@ -18,16 +18,9 @@ public class AddActivity extends AppCompatActivity {
 
 	private ArrayList<String> types = new ArrayList<>();
 	private ArrayList<String> repeats = new ArrayList<>();
-	private ArrayList<HashMap<String, Object>> reminderList = new ArrayList<>();
-	private ArrayList<HashMap<String, Object>> allReminderList = new ArrayList<>();
-	private HashMap<String, Object> mp = new HashMap<>();
-	private HashMap<String, Object> newmp = new HashMap<>();
+	private ArrayList<Reminder> reminders = new ArrayList<>();
+	private ArrayList<UnitReminder> allReminders = new ArrayList<>();
 	private int i = 0;
-	private String remType = "";
-	private String remName = "";
-	private String remTime = "";
-	private String remRepeat = "";
-	private String remFrequency = "";
 
 	private Toolbar toolbar;
 	private LinearLayout linear4;
@@ -44,8 +37,7 @@ public class AddActivity extends AppCompatActivity {
 	private Button buttonsave;
 	
 	private SharedPreferences sp1;
-	private Calendar cal = Calendar.getInstance();
-	private Calendar tmp = Calendar.getInstance();
+	private static Calendar cal = Calendar.getInstance();
 	private Intent ina = new Intent();
 	private AlertDialog.Builder exit;
 
@@ -53,6 +45,22 @@ public class AddActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add);
+
+		types.add("Remind");
+		types.add("Birthday");
+		types.add("Anniversary");
+		types.add("Daily Task");
+		types.add("Vehicle Insurance");
+		types.add("Vehicle Fitness");
+		types.add("Vehicle Service");
+		types.add("Insurance Premium");
+		types.add("EMI");
+		repeats.add("Does not repeat");
+		repeats.add("Every Day");
+		repeats.add("Every Week");
+		repeats.add("Every Month");
+		repeats.add("Every Quarter");
+		repeats.add("Every Year");
 
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		linear4 = (LinearLayout) findViewById(R.id.linear4);
@@ -68,7 +76,7 @@ public class AddActivity extends AppCompatActivity {
 		edittextfreq = (EditText) findViewById(R.id.edittextfreq);
 		buttonsave = (Button) findViewById(R.id.buttonsave);
 
-		sp1 = getSharedPreferences("reminders", Activity.MODE_PRIVATE);
+		sp1 = getSharedPreferences("reminderData", Activity.MODE_PRIVATE);
 		exit = new AlertDialog.Builder(this);
 
 		setSupportActionBar(toolbar);
@@ -148,35 +156,21 @@ public class AddActivity extends AppCompatActivity {
 			}
 		});
 
-		types.add("Remind");
-		types.add("Birthday");
-		types.add("Anniversary");
-		types.add("Daily Task");
-		types.add("Vehicle Insurance");
-		types.add("Vehicle Fitness");
-		types.add("Vehicle Service");
-		types.add("Insurance Premium");
-		types.add("EMI");
-		spinnertype.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, types));
-		((ArrayAdapter)spinnertype.getAdapter()).notifyDataSetChanged();
-		repeats.add("Does not repeat");
-		repeats.add("Every Day");
-		repeats.add("Every Week");
-		repeats.add("Every Month");
-		repeats.add("Every Quarter");
-		repeats.add("Every Year");
 		spinnerrepeat.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, repeats));
 		((ArrayAdapter)spinnerrepeat.getAdapter()).notifyDataSetChanged();
+		spinnertype.setAdapter(new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, types));
+		((ArrayAdapter)spinnertype.getAdapter()).notifyDataSetChanged();
+
 		cal = Calendar.getInstance();
 		textviewdated.setText(new SimpleDateFormat("d").format(cal.getTime()));
 		textviewdatem.setText(new SimpleDateFormat("MM").format(cal.getTime()));
 		textviewdatey.setText(new SimpleDateFormat("yyyy").format(cal.getTime()));
 
-		if (!sp1.getString("rem", "").equals("")) {
-			reminderList = new Gson().fromJson(sp1.getString("rem", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
+		if (!sp1.getString("reminders", "").equals("")) {
+			reminders = new Gson().fromJson(sp1.getString("reminders", ""), new TypeToken<ArrayList<Reminder>>(){}.getType());
 		}
-		if (!sp1.getString("allrem", "").equals("")) {
-			allReminderList = new Gson().fromJson(sp1.getString("allrem", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
+		if (!sp1.getString("allReminders", "").equals("")) {
+			allReminders = new Gson().fromJson(sp1.getString("allReminders", ""), new TypeToken<ArrayList<UnitReminder>>(){}.getType());
 		}
 	}
 
@@ -204,93 +198,36 @@ public class AddActivity extends AppCompatActivity {
 	}
 
 	private void saveReminder() {
-		cal.set(Calendar.DAY_OF_MONTH, (Integer.parseInt(textviewdated.getText().toString())));
-		cal.set(Calendar.MONTH, (Integer.parseInt(textviewdatem.getText().toString()) - 1));
-		cal.set(Calendar.YEAR, (Integer.parseInt(textviewdatey.getText().toString())));
-		cal.set(Calendar.HOUR_OF_DAY, (Integer.parseInt(textviewtimeh.getText().toString())));
-		cal.set(Calendar.MINUTE, (Integer.parseInt(textviewtimem.getText().toString())));
-
 		if (!edittextname.getText().toString().equals("")) {
 			if (!edittextfreq.getText().toString().equals("")) {
-				remType = String.valueOf((long)(spinnertype.getSelectedItemPosition()));
-				remName = edittextname.getText().toString();
-				remTime = String.valueOf((long)(cal.getTimeInMillis()));
-				remRepeat = String.valueOf((long)(spinnerrepeat.getSelectedItemPosition()));
-				remFrequency = edittextfreq.getText().toString();
-				mp = new HashMap<>();
-				mp.put("id", remTime);
-				mp.put("type", remType);
-				mp.put("name", remName);
-				mp.put("time", remTime);
-				mp.put("rep", remRepeat);
-				mp.put("frequency", remFrequency);
-				reminderList.add(mp);
-				sp1.edit().putString("rem", new Gson().toJson(reminderList)).commit();
-				for(i=0; i<Integer.parseInt(edittextfreq.getText().toString()); i++) {
-					tmp.setTimeInMillis((long)(cal.getTimeInMillis()));
-					if (remRepeat.equals("1") || remRepeat.equals("0")) {
-						tmp.add(Calendar.DAY_OF_MONTH, (int)(i));
-						newmp = new HashMap<>();
-						newmp.put("id", remTime);
-						newmp.put("type", remType);
-						newmp.put("name", remName);
-						newmp.put("rep", remRepeat);
-						newmp.put("frequency", remFrequency);
-						newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-						allReminderList.add(newmp);
-						setAlarm(tmp.getTimeInMillis(), remName, (int)tmp.getTimeInMillis()%1000000007);
-					}
-					else if (remRepeat.equals("2")) {
-						tmp.add(Calendar.DAY_OF_MONTH, (int)(7 * i));
-						newmp = new HashMap<>();
-						newmp.put("id", remTime);
-						newmp.put("type", remType);
-						newmp.put("name", remName);
-						newmp.put("rep", remRepeat);
-						newmp.put("frequency", remFrequency);
-						newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-						allReminderList.add(newmp);
-						setAlarm(tmp.getTimeInMillis(), remName, (int)tmp.getTimeInMillis()%1000000007);
-					}
-					else if (remRepeat.equals("3")) {
-						tmp.add(Calendar.MONTH, (int)(i));
-						newmp = new HashMap<>();
-						newmp.put("id", remTime);
-						newmp.put("type", remType);
-						newmp.put("name", remName);
-						newmp.put("rep", remRepeat);
-						newmp.put("frequency", remFrequency);
-						newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-						allReminderList.add(newmp);
-						setAlarm(tmp.getTimeInMillis(), remName, (int)tmp.getTimeInMillis()%1000000007);
-					}
-					else if (remRepeat.equals("4")) {
-						tmp.add(Calendar.MONTH, (int)(3 * i));
-						newmp = new HashMap<>();
-						newmp.put("id", remTime);
-						newmp.put("type", remType);
-						newmp.put("name", remName);
-						newmp.put("rep", remRepeat);
-						newmp.put("frequency", remFrequency);
-						newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-						allReminderList.add(newmp);
-						setAlarm(tmp.getTimeInMillis(), remName, (int)tmp.getTimeInMillis()%1000000007);
-					}
-					else if (remRepeat.equals("5")) {
-						tmp.add(Calendar.YEAR, (int)(i));
-						newmp = new HashMap<>();
-						newmp.put("id", remTime);
-						newmp.put("type", remType);
-						newmp.put("name", remName);
-						newmp.put("rep", remRepeat);
-						newmp.put("frequency", remFrequency);
-						newmp.put("time", String.valueOf((long)(tmp.getTimeInMillis())));
-						allReminderList.add(newmp);
-						setAlarm(tmp.getTimeInMillis(), remName, (int)tmp.getTimeInMillis()%1000000007);
-					}
-					i++;
+
+				int frequency = Integer.parseInt(edittextfreq.getText().toString());
+				String name = edittextname.getText().toString();
+				String type = spinnertype.getSelectedItem().toString();
+				String repeat = spinnerrepeat.getSelectedItem().toString();
+				long startTime = cal.getTimeInMillis();
+
+				if(frequency<1) {
+					frequency = 1;
+					edittextfreq.setText("1");
+					Toast.makeText(this, "Frequency set as 1", Toast.LENGTH_SHORT).show();
 				}
-				sp1.edit().putString("allrem", new Gson().toJson(allReminderList)).commit();
+
+				Reminder reminder = new Reminder(frequency, name, type, repeat, startTime);
+				reminders.add(reminder);
+
+				int ID = reminder.getID();
+				long[] time = reminder.getTime();
+
+				for(i=0; i<frequency; i++) {
+					UnitReminder unitReminder = new UnitReminder(i, ID, frequency, name, type, repeat, time[i]);
+					allReminders.add(unitReminder);
+					setAlarm(time[i], name, ID+i);
+				}
+
+				sp1.edit().putString("reminders", new Gson().toJson(reminders)).apply();
+				sp1.edit().putString("allReminders", new Gson().toJson(allReminders)).apply();
+
 				ina.setAction(Intent.ACTION_VIEW);
 				ina.setClass(getApplicationContext(), HomeActivity.class);
 				ina.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -344,6 +281,10 @@ public class AddActivity extends AppCompatActivity {
 			textviewdated.setText(day+"");
 			textviewdatem.setText(mon+"");
 			textviewdatey.setText(year+"");
+
+			cal.set(Calendar.DAY_OF_MONTH, day);
+			cal.set(Calendar.MONTH, month);
+			cal.set(Calendar.YEAR, year);
 		}
 	}
 
@@ -362,6 +303,9 @@ public class AddActivity extends AppCompatActivity {
 		 	TextView textviewTimeMin = (TextView) getActivity().findViewById(R.id.textviewtimem);
 		 	textviewTimeHr.setText(hourOfDay+"");
 		 	textviewTimeMin.setText(minute+"");
+
+			cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+			cal.set(Calendar.MINUTE, minute);
 		}
 	}
 }
