@@ -2,6 +2,8 @@ package com.ujjwalkumar.remindo;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.animation.Animator;
 import android.app.*;
 import android.os.*;
 import android.view.*;
@@ -11,6 +13,7 @@ import android.content.*;
 import java.util.*;
 import java.text.*;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -23,6 +26,8 @@ public class AddActivity extends AppCompatActivity {
 	private int i = 0;
 
 	private Toolbar toolbar;
+	private LottieAnimationView animationView;
+	private LinearLayout layout;
 	private LinearLayout linear4;
 	private LinearLayout linear5;
 	private Spinner spinnertype;
@@ -63,6 +68,8 @@ public class AddActivity extends AppCompatActivity {
 		repeats.add("Every Year");
 
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
+		animationView = (LottieAnimationView) findViewById(R.id.animationView);
+		layout = (LinearLayout) findViewById(R.id.layout);
 		linear4 = (LinearLayout) findViewById(R.id.linear4);
 		linear5 = (LinearLayout) findViewById(R.id.linear5);
 		spinnertype = (Spinner) findViewById(R.id.spinnertype);
@@ -82,6 +89,9 @@ public class AddActivity extends AppCompatActivity {
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
+		layout.setVisibility(View.VISIBLE);
+		animationView.setVisibility(View.GONE);
+
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _v) {
@@ -228,11 +238,41 @@ public class AddActivity extends AppCompatActivity {
 				sp1.edit().putString("reminders", new Gson().toJson(reminders)).apply();
 				sp1.edit().putString("allReminders", new Gson().toJson(allReminders)).apply();
 
-				ina.setAction(Intent.ACTION_VIEW);
-				ina.setClass(getApplicationContext(), HomeActivity.class);
-				ina.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-				startActivity(ina);
-				finish();
+				layout.setVisibility(View.GONE);
+				animationView.setVisibility(View.VISIBLE);
+				animationView.loop(false);
+				animationView.playAnimation();
+				animationView.addAnimatorListener(new Animator.AnimatorListener() {
+					@Override
+					public void onAnimationStart(Animator animator) {
+
+					}
+
+					@Override
+					public void onAnimationEnd(Animator animator) {
+						ina.setAction(Intent.ACTION_VIEW);
+						ina.setClass(getApplicationContext(), HomeActivity.class);
+						ina.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+						startActivity(ina);
+						finish();
+					}
+
+					@Override
+					public void onAnimationCancel(Animator animator) {
+						ina.setAction(Intent.ACTION_VIEW);
+						ina.setClass(getApplicationContext(), HomeActivity.class);
+						ina.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+						startActivity(ina);
+						finish();
+					}
+
+					@Override
+					public void onAnimationRepeat(Animator animator) {
+
+					}
+				});
+
+
 			}
 			else {
 				Toast.makeText(this, "Frequency required", Toast.LENGTH_SHORT).show();

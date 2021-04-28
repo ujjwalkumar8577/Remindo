@@ -160,8 +160,8 @@ public class RemindersActivity extends AppCompatActivity {
 			final TextView textviewdate = (TextView) v.findViewById(R.id.textviewdate);
 			final TextView textviewtime = (TextView) v.findViewById(R.id.textviewtime);
 			
-			android.graphics.drawable.GradientDrawable gd1 = new android.graphics.drawable.GradientDrawable(); gd1.setColor(Color.parseColor("#4DD0E1")); gd1.setCornerRadius(50); layout.setBackground(gd1);
-			android.graphics.drawable.GradientDrawable gd2 = new android.graphics.drawable.GradientDrawable(); gd2.setCornerRadius(30); imageviewtype.setBackground(gd2);
+			android.graphics.drawable.GradientDrawable gd1 = new android.graphics.drawable.GradientDrawable(); gd1.setColor(Color.parseColor("#03000000")); gd1.setCornerRadius(50); layout.setBackground(gd1);
+			android.graphics.drawable.GradientDrawable gd2 = new android.graphics.drawable.GradientDrawable(); gd2.setCornerRadius(50); imageviewtype.setBackground(gd2);
 
 			String type = data.get(position).getType();
 			String name = data.get(position).getName();
@@ -175,31 +175,31 @@ public class RemindersActivity extends AppCompatActivity {
 
 			switch (type) {
 				case "Remind":
-					imageviewtype.setImageResource(R.drawable.remind);
+					imageviewtype.setImageResource(R.drawable.logo1);
 					break;
 				case "Birthday":
-					imageviewtype.setImageResource(R.drawable.birthday);
+					imageviewtype.setImageResource(R.drawable.logo2);
 					break;
 				case "Anniversary":
-					imageviewtype.setImageResource(R.drawable.anniversary);
+					imageviewtype.setImageResource(R.drawable.logo3);
 					break;
 				case "Daily Task":
-					imageviewtype.setImageResource(R.drawable.dailytask);
+					imageviewtype.setImageResource(R.drawable.logo4);
 					break;
 				case "Vehicle Insurance":
-					imageviewtype.setImageResource(R.drawable.vehicleinsurance);
+					imageviewtype.setImageResource(R.drawable.logo5);
 					break;
 				case "Vehicle Fitness":
-					imageviewtype.setImageResource(R.drawable.vehiclefitness);
+					imageviewtype.setImageResource(R.drawable.logo6);
 					break;
 				case "Vehicle Service":
-					imageviewtype.setImageResource(R.drawable.vehicleservice);
+					imageviewtype.setImageResource(R.drawable.logo7);
 					break;
 				case "Insurance Premium":
-					imageviewtype.setImageResource(R.drawable.insurancepremium);
+					imageviewtype.setImageResource(R.drawable.logo8);
 					break;
 				case "EMI":
-					imageviewtype.setImageResource(R.drawable.emi);
+					imageviewtype.setImageResource(R.drawable.logo9);
 					break;
 			}
 			
